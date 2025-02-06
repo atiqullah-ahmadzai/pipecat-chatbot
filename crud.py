@@ -141,6 +141,21 @@ class DatabaseHelper:
             logger.error(f"Error deleting {model.__name__} with id {id}: {str(e)}")
             return False
     
+    def delete_all(self, model: Type[Base], filter_condition) -> bool:
+        try:
+            with self.get_db() as db:
+                items = db.query(model).filter(filter_condition).all()
+                if items:
+                    for item in items:
+                        db.delete(item)
+                    db.commit()
+                    return True
+                return False
+        except SQLAlchemyError as e:
+            logger.error(f"Error deleting {model.__name__} with condition {filter_condition}: {str(e)}")
+            return False
+
+    
     def get_filtered(self, model: Type[Base], **kwargs) -> List[Base]:
         """
         Get records with dynamic filtering

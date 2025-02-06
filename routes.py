@@ -49,6 +49,7 @@ async def voice_chat(request: Request, id: int):
 @router.get("/website/delete/{id}", response_class=HTMLResponse)
 async def delete_website(request: Request, id: int):
     db.delete(models.Website,id)
+    db.delete_all(models.Chat,filters={"website_id":id})
     rsp["status"] = True
     rsp["message"] = "Website deleted successfully"
     rsp["data"] = []
