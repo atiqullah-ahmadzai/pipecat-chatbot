@@ -19,3 +19,26 @@ This project is a simple chat bot connected to Llama Instant 8b. It uses a scrap
 - Connects to Llama Instant 8b.
 - Uses a scraper to store data in FAISS vector database.
 - Retrieves content from the vector database based on added URLs.
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd pipecat-chatbot
+   ```
+3. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Usage
+
+1. Run the chat bot:
+   ```bash
+   python server.py
+   ```
+2. Interact with the bot through the provided user interface using http://localhost:8000
