@@ -301,12 +301,14 @@
 
 			$(".close-chat-modal").click(function(){
 				event.preventDefault();
+				$("#chatModal iframe").attr("src", "#");
 				$("#chatModal").modal("hide");
 				$("#chatModal").hide();
 				$(".modal-backdrop").hide();
 			});
 
 			$(".close-voice-modal").click(function(){
+				$("#chatModal iframe").attr("src", "#");
 				event.preventDefault();
 				$("#voiceModal").modal("hide");
 				$("#voiceModal").hide();
