@@ -38,7 +38,12 @@ This project is a simple chat bot connected to Llama Instant 8b. It uses a scrap
 ## Usage
 
 1. Run the chat bot:
+
    ```bash
    python server.py
    ```
-2. Interact with the bot through the provided user interface using http://localhost:8000
+2. To clean Daily rooms
+
+   ```bash
+   python clean_rooms.py
+   ```
