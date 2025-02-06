@@ -224,13 +224,22 @@ class ChatbotClient {
     try {
       // Create a new Daily transport for WebRTC communication
       const transport = new DailyTransport();
+      // detect host
+      const host = window.location.hostname;
+      const protocol = window.location.protocol;
+      const port = window.location.port;
+
+      let url = protocol + "//" + host;
+      if(host =="" || host == "localhost") {
+        url = protocol + "//" + host + ":" + port;
+      }
 
       // Initialize the RTVI client with our configuration
       this.rtviClient = new RTVIClient({
         transport,
         params: {
           // The baseURL and endpoint of your bot server that the client will connect to
-          baseUrl: 'http://localhost:8000',
+          baseUrl: url,
           endpoints: {
             connect: '/connect/'+websiteId,
           },
