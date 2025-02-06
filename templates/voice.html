@@ -1,0 +1,202 @@
+<html>
+<head>
+    <title>ChatBot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/mdb-ui-kit@8.2.0/css/mdb.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" crossorigin src="/static/pipecat-build/bundle.js?v=2"></script>
+    <style>
+        .card-body {
+            position: relative;
+            height: 600px;
+            overflow: auto; /* Enable scrolling */
+            scrollbar-width: none; /* For Firefox */
+            -ms-overflow-style: none; /* For Internet Explorer & Edge */
+        }
+        
+        .card-body::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome, Safari, and Edge */
+        }
+        
+ 
+        canvas {
+            max-width: 300px;
+            width: 300px;
+            height: 58px;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="container py-5">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-10">
+                    <div class="card" id="chat">
+                        <div class="card-header d-flex justify-content-between align-items-center p-3">
+                            <h5 class="mb-0">Voice Chat with {{ data.website.url }}</h5>
+                        </div>
+                        <div class="card-body" data-mdb-perfect-scrollbar-init style="">
+                            <div class="container">
+                                <div class="status-bar">
+                                  <div class="status">
+                            
+                                  </div>
+                                  <div class="controls">
+                            
+                                  </div>
+                                </div>
+                            
+                                <div class="main-content">
+                                  <div class="bot-container">
+                                    <div id="search-result-container">
+                                    </div> 
+                                    <audio id="bot-audio" autoplay></audio>
+                                  </div>
+                                </div>
+                            
+                                <div class="debug-panel"> 
+                                    <div id="debug-log">
+                                      <p>Connect to start the chat and wait for the bot to run.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                            <div class="container row">
+                                <div class="col-md-6">
+                                    <canvas id="waveCanvas"></canvas>
+                                </div>
+                                <div class="col-md-6" style="text-align: right;">
+                                    <button class="btn btn-primary" data-id={{data.website.id}} id="connect-btn">Connect</button>
+                                    <button class="btn btn-primary" id="disconnect-btn">Disconnect</button>
+                                    Status: <span id="connection-status">Disconnected</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        
+        $(document).ready(function() {
+            $("#chat .card-body").scrollTop($("#chat .card-body")[0].scrollHeight);
+        });
+        
+
+        const canvas = document.getElementById('waveCanvas')
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        
+        const turbulenceFactor = 0.25
+        const maxAmplitude = canvas.height / 3.5 // Max amplitude of the wave
+        const baseLine = canvas.height / 2 // Vertical center of the canvas
+        const numberOfWaves = 10
+        let globalTime = 0
+        
+        function createGradient() {
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0)
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0.2)')
+            gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.75)')
+            gradient.addColorStop(1, 'rgba(255, 255, 25, 0.2')
+            return gradient
+        }
+        
+        const gradient = createGradient()
+        
+        function generateSmoothWave(dataArray, frequency = 0.1, amplitude = 64) {
+            const array = new Uint8Array(100)
+            for (let i = 0; i < array.length; i++) {
+                array[i] = (Math.sin(i * frequency + globalTime) + 1) * amplitude
+            }
+            
+            return array
+        }
+        
+        function animateWaves(dataArray, analyser) {
+            const isSpeaking = dataArray.some((value) => value > 0)
+            if (isSpeaking) {
+                analyser.getByteFrequencyData(dataArray)
+            } else {
+                dataArray = generateSmoothWave(dataArray, 0.00, 1)
+            }
+            drawWave(dataArray, analyser)
+        }
+        
+        navigator.mediaDevices
+        .getUserMedia({ audio: true, video: false })
+        .then((stream) => {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+            const analyser = audioContext.createAnalyser()
+            const microphone = audioContext.createMediaStreamSource(stream)
+            microphone.connect(analyser)
+            const dataArray = new Uint8Array(analyser.frequencyBinCount)
+            const waves = dataArray.slice(0, 250)
+            animateWaves(waves, analyser)
+        })
+        .catch((error) => {
+            console.error('Access to microphone denied', error)
+        })
+        
+        function drawWave(dataArray, analyser) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            globalTime += 0.05
+            
+            for (let j = 0; j < numberOfWaves; j++) {
+                ctx.beginPath()
+                ctx.lineWidth = 2
+                ctx.strokeStyle = gradient
+                
+                let x = 0
+                
+                let sliceWidth = (canvas.width * 1.0) / dataArray.length
+                
+                let lastX = 0
+                let lastY = baseLine
+                
+                for (let i = 0; i < dataArray.length; i++) {
+                    const v = dataArray[i] / 96.0
+                    const mid = dataArray.length / 2
+                    const distanceFromMid = Math.abs(i - mid) / mid
+                    const dampFactor = 1 - Math.pow((2 * i) / dataArray.length - 1, 2) // Creates a parabolic falloff
+                    
+                    const amplitude = maxAmplitude * dampFactor * (1 - distanceFromMid)
+                    const isWaveInverted = j % 2 ? 1 : -1
+                    const frequency = isWaveInverted * (0.05 + turbulenceFactor)
+                    
+                    const y = baseLine + Math.sin(i * frequency + globalTime + j) * amplitude * v
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y)
+                    } else {
+                        let xc = (x + lastX) / 2
+                        let yc = (y + lastY) / 2
+                        ctx.quadraticCurveTo(lastX, lastY, xc, yc)
+                    }
+                    
+                    lastX = x
+                    lastY = y
+                    x += sliceWidth
+                }
+                
+                ctx.lineTo(canvas.width, lastY)
+                ctx.stroke()
+            }
+            
+            requestAnimationFrame(() => animateWaves(dataArray, analyser))
+        }
+        
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mdb-ui-kit@8.2.0/js/mdb.umd.min.js"></script>
+</body>
+</html>

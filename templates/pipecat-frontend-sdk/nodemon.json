@@ -1,0 +1,14 @@
+{
+  "watch": [
+    "./src",
+    "./index.html"
+  ],
+  "ignore": [
+    "../../static/pipecat-build/*",
+    "node_modules/*",
+    "dist/*"
+  ],
+  "ext": "js,jsx,ts,tsx,css,scss,html",
+  "exec": "vite build",
+  "verbose": true
+}

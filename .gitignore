@@ -1,0 +1,11 @@
+.vscode
+env/
+__pycache__/
+*~
+venv
+.venv
+/.idea
+
+*.db
+node_modules/
+scrapper/websites/

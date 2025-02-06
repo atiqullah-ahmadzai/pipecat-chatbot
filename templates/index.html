@@ -1,0 +1,321 @@
+<html>
+<head>
+	<title>ChatBot</title>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/mdb-ui-kit@8.2.0/css/mdb.min.css" rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+	<header>
+		<!-- Intro settings -->
+		<style>
+			/* Default height for small devices */
+			#intro {
+				height: 600px;
+			}
+			@media (max-width: 991px) {
+				#intro {
+					/* Margin to fix overlapping fixed navbar */
+					margin-top: 45px;
+				}
+			}
+		</style>
+		
+		<!-- Background image -->
+		<div id="intro" class="p-5 text-center bg-image shadow-1-strong" style="background-image: url('/static/images/cover.jpg');">
+			<div class="mask" style="background-color: rgba(0, 0, 0, 0.7);">
+				<div class="d-flex justify-content-center align-items-center h-100">
+					<div class="text-white px-4" data-mdb-theme="dark">
+						<h1 class="mb-3">ChatBot</h1>
+						
+						<p>With the help of this bot you can add URLs to knowledge base.</p>
+						<p>Talk to the information over voice or text</p>
+						
+						<a class="btn btn-outline-light btn-lg m-2" href="#container">Check Now!</a>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Background image -->
+	</header>
+	<!-- Main Navigation -->
+	
+	<!-- Main layout -->
+	<main class="mt-5">
+		<div class="container" id="container">
+			<!-- Section: Content -->
+			<section>
+				<div class="row">
+					<div class="col-md-6 gx-5 mb-4 d-lg-flex align-items-center">
+						<div>
+							<h4><strong>How to use?</strong></h4>
+							<p class="text-muted">Add URL and wait for the process of scrapping to be completed, once it is completed you can choose any URL from below table to chat with it or talk with it.</p>
+						</div>
+					</div>
+					
+					<div class="col-md-6 gx-5 mb-4">
+						<form id="addUrlForm" method="POST">
+							
+							<div class="form-outline mb-4" data-mdb-input-init>
+								<input type="url" id="addUrl" name="url" class="form-control" value="https://atiqullah.dev" />
+								<label class="form-label" for="form5Example1">URL</label>
+							</div>
+							<div class="form-outline mb-4" data-mdb-input-init>
+								<input type="text" id="addAgent" name="agent" class="form-control" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36" />
+								<label class="form-label" for="form5Example1">User Agent</label>
+							</div>
+							
+							<div class="form-check form-switch mb-2">
+								<input class="form-check-input" type="checkbox" role="switch" id="addFollowLink" />
+								<label class="form-check-label" for="addFollowLink">Follow the sublinks?</label>
+							</div>
+							
+							<div class="mb-2">
+									<div class="form-check">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"/>
+									<label class="form-check-label" for="flexRadioDefault1"> Httrack </label>
+								  </div>
+								  
+								  <!-- Default checked radio -->
+								  <div class="form-check">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked/>
+									<label class="form-check-label" for="flexRadioDefault2"> Basic Http </label>
+								  </div>
+							</div>
+							<button type="submit" id="addBtn" class="btn btn-primary btn-block mb-4" data-mdb-ripple-init>Add URL</button>
+							
+						</form>
+					</div>
+				</div>
+			</section>
+			<hr class="hr hr-blurry" />
+			<section>
+				
+				<h4 style="text-align:center"><strong>Manage URLs</strong></h4>
+				<table class="table align-middle mb-0 bg-white">
+					<thead class="bg-light">
+						<tr>
+							<th>ID</th>
+							<th>Title</th>
+							<th>URL</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+						
+					</tbody>
+				</table>
+			</section>
+			<br><br><br><br>
+		</div>
+	</main>
+	
+	
+	<!-- Footer -->
+	<footer class="bg-light text-lg-start">
+		
+
+		
+
+		
+		
+		<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.1);">
+			© 2024 Copyright:
+			<a class="text-dark" href="#">Philipp AI</a>
+		</div>
+		
+	</footer>
+	<!-- Footer -->
+	
+	<!-- Modals -->
+	<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-fullscreen">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="chatModalLabel">Chat Assistant</h5>
+					<button type="button" class="btn-close close-chat-modal" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<iframe src="#" style="width: 100%; height: 100vh"></iframe>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary close-chat-modal" data-mdb-ripple-init data-mdb-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="voiceModal" tabindex="-1" aria-labelledby="voiceModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-fullscreen">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="voiceModalLabel">Voice Assistant</h5>
+					<button type="button" class="btn-close close-voice-modal" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<iframe src="#" style="width: 100%; height: 100vh"></iframe>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary close-voice-modal" data-mdb-ripple-init data-mdb-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+
+	<script>
+		$(document).ready(function(){
+			function get_links()
+			{
+				$.ajax({
+					url: "/website",
+					type: "GET",
+					success: function(data){
+						// Replace the tbody content of the table with new data
+						// The data should be an array of objects with properties: id, title, url, and status
+						// Example: data = [{id: 1, title: 'Example', url: 'http://example.com', status: 'Active'}, ...]
+						$("table tbody").empty();
+						data.urls.forEach(function(item) {
+							status  = item.status == "0" ? "Pending" : "Processed";
+							alert   = item.status == "0" ? "warning" : "success";
+							var row = "<tr>" +
+								"<td>" + item.id + "</td>" +
+								"<td><p class='fw-normal mb-1'>" + item.title + "</p></td>" +
+								"<td><a href='" + item.url + "'>" + item.url + "</a></td>" +
+								"<td><span class='badge badge-"+alert+" rounded-pill d-inline'>" + status + "</span></td>" +
+								"<td>" +
+								"<button type='button' data-id="+item.id+" class='btn btn-danger btn-floating delete-chat-btn' data-mdb-ripple-init><i class='fas fa-trash'></i></button>" +
+								"&nbsp;<button type='button' data-status="+item.status+" data-id="+item.id+" class='btn btn-success btn-floating chat-chat-btn' data-mdb-ripple-init data-mdb-modal-init data-mdb-target='#chatModal'><i class='fas fa-comment'></i></button>" +
+								"&nbsp;<button type='button' data-status="+item.status+" data-id="+item.id+" class='btn btn-primary btn-floating voice-voice-btn' data-mdb-ripple-init data-mdb-modal-init data-mdb-target='#voiceModal'><i class='fas fa-microphone'></i></button>" +
+								"</td>" +
+								"</tr>";
+							$("table tbody").append(row);
+						});
+				
+
+					}
+				});
+			}
+
+			get_links();
+
+			setInterval(function(){
+				get_links();
+			}, 2000);
+
+			$("#addUrlForm").submit(function(e){
+				e.preventDefault();
+				$("#addBtn").attr("disabled", true);
+				var url = $("#addUrl").val();
+				var followSublinks = $("#addFollowLink").is(":checked");
+				$.ajax({
+					url: "/website/create",
+					type: "POST",
+					data: {
+						url: url,
+						followSublinks: followSublinks
+					},
+					success: function(data){
+						if(data.status == 1){
+							toastr.success(data.message);
+						}else{
+							toastr.error(data.message);
+						}
+						$("#addBtn").attr("disabled", false);
+					}
+				});
+				
+			});
+
+
+			$(document).on("click", ".chat-chat-btn", function () {
+				let targetModal = $(this).attr("data-mdb-target");
+				let modalElement = document.querySelector(targetModal);
+				let id = $(this).data("id");
+				let status = $(this).data("status");
+				if (status == 0) {
+					toastr.error("The URL is not processed yet, please wait for a while.");
+					return;
+				}
+
+				if (modalElement) {
+					let modalInstance = new mdb.Modal(modalElement);
+					$("#chatModal iframe").attr("src", "/chat/"+id);
+					modalInstance.show();
+				} else {
+					console.error("Modal not found: " + targetModal);
+				}
+			});
+
+			$(document).on("click", ".voice-voice-btn", function () {
+				let targetModal = $(this).attr("data-mdb-target");
+				let modalElement = document.querySelector(targetModal);
+				let id = $(this).data("id");
+				let status = $(this).data("status");
+				if (status == 0) {
+					toastr.error("The URL is not processed yet, please wait for a while.");
+					return;
+				}
+
+				if (modalElement) {
+					let modalInstance = new mdb.Modal(modalElement);
+					$("#voiceModal iframe").attr("src", "/voice/"+id);
+					modalInstance.show();
+				} else {
+					console.error("Modal not found: " + targetModal);
+				}
+			});
+
+
+			$(document).on("click", ".delete-chat-btn", function () {
+
+				// toastr with confirm button
+				id = $(this).data("id");
+				toastr.warning('Are you sure you want to delete this URL? Tap anywhere for Yes!', 'Warning', {
+					"positionClass": "toast-top-right",
+					"closeButton": true,
+					"progressBar": true,
+					"preventDuplicates": true,
+					"onclick": function(){
+						$.ajax({
+							url: "/website/delete/"+id,
+							type: "GET",
+							success: function(data){
+								if(data.status == 1){
+									toastr.success(data.message);
+								}else{
+									toastr.error(data.message);
+								}
+							}
+						});
+					}
+				});
+			});
+
+			$(".close-chat-modal").click(function(){
+				event.preventDefault();
+				$("#chatModal").modal("hide");
+				$("#chatModal").hide();
+				$(".modal-backdrop").hide();
+			});
+
+			$(".close-voice-modal").click(function(){
+				event.preventDefault();
+				$("#voiceModal").modal("hide");
+				$("#voiceModal").hide();
+				$(".modal-backdrop").hide();
+			});
+
+		});
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mdb-ui-kit@8.2.0/js/mdb.umd.min.js"></script>
+</body>
+</html>
