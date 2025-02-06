@@ -81,10 +81,11 @@ async def bot_connect(request: Request, id: int) -> Dict[Any, Any]:
     db = DatabaseHelper()
     website = db.get_single(models.Website, id)
     room_url, token = await create_room_and_token()
+    python_path = os.getenv("PYTHON_PATH", "python3")
     try:
         bot_file = "voice_bot"
         proc = subprocess.Popen(
-            [f"python3 -m {bot_file} -u {room_url} -t {token} -l {website.url} -i {id}"],
+            [f"{python_path} -m {bot_file} -u {room_url} -t {token} -l {website.url} -i {id}"],
             shell=True,
             bufsize=1,
             cwd=os.path.dirname(os.path.abspath(__file__)),

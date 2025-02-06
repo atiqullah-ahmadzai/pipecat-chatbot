@@ -12,11 +12,13 @@ from llama_index.core import VectorStoreIndex, StorageContext, load_index_from_s
 from llama_index.core.schema import Document
 from llama_index.vector_stores.faiss import FaissVectorStore
 from llama_index.core.base.embeddings.base import BaseEmbedding
+from dotenv import load_dotenv
 
+load_dotenv(override=True)
 
 class Config:
     CLOUDFLARE_API_URL = "https://api.cloudflare.com/client/v4/accounts/bf52f6782290abdecd497dbd48c23ef3/ai/run/@cf/baai/bge-large-en-v1.5"
-    CLOUDFLARE_API_KEY = "pf__ycepV86zILXF7QgBBYE0hIQm7stZlaFo7h_s"
+    CLOUDFLARE_API_KEY = os.getenv("CLOUDFLARE_API_KEY")
     FAISS_INDEX_FILE = "faiss_index.bin"
     STORAGE_DIR = "storage/"
     CHUNK_SIZE = 500
